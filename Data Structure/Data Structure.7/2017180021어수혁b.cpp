@@ -32,7 +32,7 @@ int main()
 	int choice;
 	int p1 = 0,p2 = 0;
 	int turnofwho = 0;
-	int table[19][19] = { 0 };
+	int table[19][19] = { 0 };  //공백일때 0이다
 
 	stone UndoStack[300] = { 0 };
 	int undoPointer = 0;
@@ -41,6 +41,9 @@ int main()
 	int Maximum[2] = { 0 };
 	int SavedMaximum[2] = { 0 };
 	bool isSamestone[2] = { false };
+	bool blink = false;
+	int splender[4] = { 0 };
+	POINT dangerPoint[2];
 
 	int startingMax[2] = { 0 };
 
@@ -349,8 +352,6 @@ int main()
 				}
 			}
 			//가로
-			Maximum[0] = 0;
-			Maximum[1] = 0;
 
 			for (int i = 0; i < 19; i++)
 			{
@@ -360,7 +361,12 @@ int main()
 				SavedMaximum[1] = 0;
 				startingMax[0] = 0;
 				startingMax[1] = 0;
-
+				blink = false;
+				for (int k = 0; k < 2; k++)
+				{
+					dangerPoint[k].x = 0;
+					dangerPoint[k].y = 0;
+				}
 				for (int j = 0; j < 19; j++)
 				{
 					if (table[j][i] == 1 && Maximum[0] == 0) //검은돌이고 처음나온친구
@@ -403,14 +409,47 @@ int main()
 								startingMax[1] = j;
 						}
 					}
+					else if (table[j][i] == 0 && blink == false && isSamestone[0] + isSamestone[1] > 0)
+					{
+						blink = true;
+					}
 					else
 					{
 						Maximum[0] = 0;
 						Maximum[1] = 0;
 						isSamestone[0] = false;
 						isSamestone[1] = false;
+						if (blink == true)
+							j--;
+						blink = false;
 					}
+					if (j < 16)
+					{
+						for (int k = 0; k<4; k++)
+							splender[k] = table[j + k][i];
+						
+						if ((splender[0] == 0 || splender[0] == 1)&& (splender[1] == 0 || splender[1] == 1)&& (splender[2] == 0 || splender[2] == 1)&&(splender[3] == 0 || splender[3] == 1)&&splender[0]+splender[1]+splender[2]+splender[3] == 3)
+						{
+							for (int k = 0; k < 4; k++)
+							{
+								if (splender[k] == 0)
+									dangerPoint[0].x = j + k + 1;
+								dangerPoint[0].y = i + 1;
+							}
+						}
+						if ((splender[0] == 0 || splender[0] == 2) && (splender[1] == 0 || splender[1] == 2) && (splender[2] == 0 || splender[2] == 2) && (splender[3] == 0 || splender[3] == 2) && splender[0] + splender[1] + splender[2] + splender[3] == 6)
+						{
+							for (int k = 0; k < 4; k++)
+							{
+								if (splender[k] == 0)
+									dangerPoint[1].x = j + k + 1;
+								dangerPoint[1].y = i + 1;
+							}
+						}
+					}
+				
 				}
+
 
 				movexy(25, i + 1);
 				if (SavedMaximum[0] > SavedMaximum[1])
@@ -455,6 +494,8 @@ int main()
 						}
 					}
 				}
+				movexy(27, i + 1);
+				printf("%2d,%2d,%2d,%2d", dangerPoint[0].x, dangerPoint[0].y, dangerPoint[1].x, dangerPoint[1].y);
 			}
 
 			//////////////////////////////////////////////////////////////////////////////
@@ -598,19 +639,19 @@ int main()
 					}
 				}
 
-				movexy(1, i + 46);
-				if (SavedMaximum[0] > SavedMaximum[1])
-				{
-					printf("b %d", SavedMaximum[0]);
-				}
-				else if (SavedMaximum[0] < SavedMaximum[1])
-				{
-					printf("w %d", SavedMaximum[1]);
-				}
-				else
-				{
-					printf("= %d", SavedMaximum[0]);
-				}
+				//movexy(1, i + 46);
+				//if (SavedMaximum[0] > SavedMaximum[1])
+				//{
+				//	printf("b %d", SavedMaximum[0]);
+				//}
+				//else if (SavedMaximum[0] < SavedMaximum[1])
+				//{
+				//	printf("w %d", SavedMaximum[1]);
+				//}
+				//else
+				//{
+				//	printf("= %d", SavedMaximum[0]);
+				//}
 			}
 
 			//////////////////////////////////////////////////////////////////////////////
@@ -674,19 +715,19 @@ int main()
 					}
 				}
 
-				movexy(5, i + 28);
-				if (SavedMaximum[0] > SavedMaximum[1])
-				{
-					printf("b %d", SavedMaximum[0]);
-				}
-				else if (SavedMaximum[0] < SavedMaximum[1])
-				{
-					printf("w %d", SavedMaximum[1]);
-				}
-				else
-				{
-					printf("= %d", SavedMaximum[0]);
-				}
+				//movexy(5, i + 28);
+				//if (SavedMaximum[0] > SavedMaximum[1])
+				//{
+				//	printf("b %d", SavedMaximum[0]);
+				//}
+				//else if (SavedMaximum[0] < SavedMaximum[1])
+				//{
+				//	printf("w %d", SavedMaximum[1]);
+				//}
+				//else
+				//{
+				//	printf("= %d", SavedMaximum[0]);
+				//}
 			}
 		}
 		else
